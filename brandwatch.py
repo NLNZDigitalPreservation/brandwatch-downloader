@@ -54,19 +54,19 @@ class Brandwatch:
             self.__token = self.__user.token
         except Exception as e:
             if 'Invalid access token' in str(e):
-                print('Token is invalid or expired')
+                logging.info('Token is invalid or expired')
                 if self.__logger is not None:
                     self.__logger.emit('Token is invalid or expired')
                 self.__user = None
             elif 'rate limit exceeded' in str(e):
-                print('Rate limit exceeded, please wait '+str(self.__delay)+'s ...')
+                logging.info('Rate limit exceeded, please wait '+str(self.__delay)+'s ...')
                 if self.__logger is not None:
                     self.__logger.emit('Rate limit exceeded, please wait '+str(self.__delay)+'s...')
                 self.__user = None
                 sleep(self.__delay)
                 self.getUser()
             else:
-                print('Error: '+ str(e))
+                logging.info('Error: '+ str(e))
                 if self.__logger is not None:
                     self.__logger.emit('Error: '+str(e))
         return self.__user
@@ -86,19 +86,19 @@ class Brandwatch:
                     self.__projects = projects
             except Exception as e:
                 if 'Invalid access token' in str(e):
-                    print('Token is invalid or expired')
+                    logging.info('Token is invalid or expired')
                     if self.__logger is not None:
                         self.__logger.emit('Token is invalid or expired')
                     self.__user = None
                 elif 'rate limit exceeded' in str(e):
-                    print('Rate limit exceeded, please wait '+str(self.__delay)+'s ...')
+                    logging.info('Rate limit exceeded, please wait '+str(self.__delay)+'s ...')
                     if self.__logger is not None:
                         self.__logger.emit('Rate limit exceeded, please wait '+str(self.__delay)+'s...')
                     self.__projects = None
                     sleep(self.__delay)
                     self.getProjects()
                 else:
-                    print(e)
+                    logging.info('Error: '+ str(e))
                     if self.__logger is not None:
                         self.__logger.emit('Error: '+str(e))
         return self.__projects
@@ -111,19 +111,19 @@ class Brandwatch:
             self.__project = BWProject(project=project, username = self.__username, password = self.__password, token = self.__token, token_path = self.__token_path)
         except Exception as e:
             if 'Invalid access token' in str(e):
-                print('Token is invalid or expired')
+                logging.info('Token is invalid or expired')
                 if self.__logger is not None:
                     self.__logger.emit('Token is invalid or expired')
                 self.__user = None
             elif 'rate limit exceeded' in str(e):
-                print('Rate limit exceeded, please wait '+str(self.__delay)+'s ...')
+                logging.info('Rate limit exceeded, please wait '+str(self.__delay)+'s ...')
                 if self.__logger is not None:
                     self.__logger.emit('Rate limit exceeded, please wait '+str(self.__delay)+'s...')
                 self.__project = None
                 sleep(self.__delay)
                 self.getProject(project)
             else:
-                print(e)
+                logging.info('Error: '+ str(e))
                 if self.__logger is not None:
                     self.__logger.emit('Error: '+str(e))
         return self.__project
@@ -136,19 +136,19 @@ class Brandwatch:
             self.__groups = BWGroups(project)
         except Exception as e:
             if 'Invalid access token' in str(e):
-                print('Token is invalid or expired')
+                logging.info('Token is invalid or expired')
                 if self.__logger is not None:
                     self.__logger.emit('Token is invalid or expired')
                 self.__user = None
             elif 'rate limit exceeded' in str(e):
-                print('Rate limit exceeded, please wait '+str(self.__delay)+'s ...')
+                logging.info('Rate limit exceeded, please wait '+str(self.__delay)+'s ...')
                 if self.__logger is not None:
                     self.__logger.emit('Rate limit exceeded, please wait '+str(self.__delay)+'s ...')
                 self.__groups = None
                 sleep(self.__delay)
                 self.getGroupInst(project)
             else:
-                print(e)
+                logging.info('Error: '+ str(e))
                 if self.__logger is not None:
                     self.__logger.emit('Error: '+str(e))
         return self.__groups
@@ -171,19 +171,19 @@ class Brandwatch:
             self.__queries = BWQueries(project)
         except Exception as e:
             if 'Invalid access token' in str(e):
-                print('Token is invalid or expired')
+                logging.info('Token is invalid or expired')
                 if self.__logger is not None:
                     self.__logger.emit('Token is invalid or expired')
                 self.__user = None
             elif 'rate limit exceeded' in str(e):
-                print('Rate limit exceeded, please wait '+str(self.__delay)+'s ...')
+                logging.info('Rate limit exceeded, please wait '+str(self.__delay)+'s ...')
                 if self.__logger is not None:
                     self.__logger.emit('Rate limit exceeded, please wait '+str(self.__delay)+'s...')
                 self.__queries = None
                 sleep(self.__delay)
                 self.getQueryInst(project)
             else:
-                print(e)
+                logging.info('Error: '+ str(e))
                 if self.__logger is not None:
                     self.__logger.emit('Error: '+str(e))
         return self.__queries
@@ -211,23 +211,23 @@ class Brandwatch:
                     self.__groups_queries = groups_queries
             except Exception as e:
                 if 'Invalid access token' in str(e):
-                    print('Token is invalid or expired')
+                    logging.info('Token is invalid or expired')
                     if self.__logger is not None:
                         self.__logger.emit('Token is invalid or expired')
                     self.__user = None
                 elif 'rate limit exceeded' in str(e):
-                    print('Rate limit exceeded, please wait '+str(self.__delay)+'s ...')
+                    logging.info('Rate limit exceeded, please wait '+str(self.__delay)+'s ...')
                     if self.__logger is not None:
                         self.__logger.emit('Rate limit exceeded, please wait '+str(self.__delay)+'s...')
                     self.__groups_queries = None
                     sleep(self.__delay)
                     self.getQueriesByGroup(group)
                 else:
-                    print(e)
+                    logging.info('Error: '+ str(e))
                     if self.__logger is not None:
                         self.__logger.emit('Error: '+str(e))
         else:
-            print('Please retrieve groups by project first ...')
+            logging.info('Please retrieve groups by project first ...')
         return self.__groups_queries
         
     def getMentions(self, project, name, start, end):
@@ -245,19 +245,19 @@ class Brandwatch:
                     self.__mentions = mentions
             except Exception as e:
                 if 'Invalid access token' in str(e):
-                    print('Token is invalid or expired')
+                    logging.info('Token is invalid or expired')
                     if self.__logger is not None:
                         self.__logger.emit('Token is invalid or expired')
                     self.__user = None
                 elif 'rate limit exceeded' in str(e):
-                    print('Rate limit exceeded, please wait '+str(self.__delay)+'s ...')
+                    logging.info('Rate limit exceeded, please wait '+str(self.__delay)+'s ...')
                     if self.__logger is not None:
                         self.__logger.emit('Rate limit exceeded, please wait '+str(self.__delay)+'s...')
                     self.__mentions = None
                     sleep(self.__delay)
                     self.getMentions(project, name, start, end)
                 else:
-                    print(e)
+                    logging.info('Error: '+ str(e))
                     if self.__logger is not None:
                         self.__logger.emit('Error: '+str(e))
         return self.__mentions
@@ -294,19 +294,19 @@ class Brandwatch:
     
     
     def displayGroups(self):
-        print(self.GroupsDF())
+        logging.info(self.GroupsDF())
  
     def displayProjects(self):
-        print(self.ProjectsDF())
+        logging.info(self.ProjectsDF())
     
     def displayQueries(self):
-        print(self.QueryDF())
+        logging.info(self.QueryDF())
 
     def displayGroupQueries(self):
-        print(self.QueryDF())
+        logging.info(self.QueryDF())
         
     def displayMentions(self):
-        print(self.ProjectsDF())
+        logging.info(self.ProjectsDF())
 
         
     def timeconvertToUTC(self, timestr, tz):
