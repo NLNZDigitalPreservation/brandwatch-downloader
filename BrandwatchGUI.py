@@ -7,7 +7,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from brandwatch import Brandwatch
 
-
+# Login Form layer, check if token file not exist or invalid, show this layer
 class LoginForm(QFrame):
     def __init__(self, parent):
         super().__init__(parent)
@@ -24,6 +24,7 @@ class LoginForm(QFrame):
         self.gbLabel.move(320, 125)
         self.gbLabel.resize(80, 36)
 
+        # Display error/status message
         self.msg = QLabel(self)
         self.msg.setStyleSheet('color: #CB4335;')
         self.msg.setText('')
@@ -31,6 +32,7 @@ class LoginForm(QFrame):
         self.msg.move(200, 165)
         self.msg.resize(320, 28)
 
+        # Token input area
         self.tokenLabel = QLabel('Token', self)
         self.tokenLabel.setStyleSheet("font-family: Arial, sans-serif; font-size: 12pt;")
         self.tokenLabel.move(220, 200)
@@ -40,6 +42,7 @@ class LoginForm(QFrame):
         self.tokenInput.move(320, 200)
         self.tokenInput.resize(180, 36)
 
+        # Username/Password input area
         self.userLabel = QLabel('Username', self)
         self.userLabel.setStyleSheet("font-family: Arial, sans-serif; font-size: 12pt;")
         self.userLabel.move(220, 250)
@@ -64,9 +67,11 @@ class LoginForm(QFrame):
         self.loginBtn.move(300, 360)
         self.loginBtn.resize(120, 36)
 
+    # Set click action for login button
     def func(self, loginFunc):
         self.loginBtn.clicked.connect(loginFunc)
 
+# Custom list menu 
 class SelectList(QListWidget):
     def __init__(self, parent):
         super().__init__(parent)
@@ -81,18 +86,23 @@ class SelectList(QListWidget):
     def getItems(self):
         return [str(self.listWidget.item(x).text()) for x in range(self.listWidget.count())]
 
+    # Set item click action
     def clicked(self, func):
         self.listWidget.itemClicked.connect(func)
     
+    # Get size of current list
     def size(self, w, h):
         self.listWidget.resize(w, h)
 
+    # Sort current list with default ASC order
     def sort(self):
         self.listWidget.sortItems()
 
+    # Clear items in list
     def clear(self):
         self.listWidget.clear()
 
+# Download layer, it will show current user, list all projects under the user, choose groups based on project, choose queries based on project/groups, get mentions and download in different format.
 class Downloader(QFrame):
     def __init__(self, parent):
         super().__init__(parent)
@@ -103,6 +113,7 @@ class Downloader(QFrame):
         self.icon_folder = b'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'
         self.savePath = self.convertPath(os.getcwd()+'/dataset.csv')
 
+        # Display current user
         self.userLabel = QLabel(self)
         self.userLabel.setText('Current user: ')
         self.userLabel.move(20, 10)
@@ -113,21 +124,25 @@ class Downloader(QFrame):
         self.projectsLabel.move(20, 40)
         self.projectsLabel.resize(120, 36)
 
+        # List all projects
         self.projects = QComboBox(self)
         self.projects.addItems([])
         self.projects.move(140, 40)
         self.projects.resize(240, 36)
 
+        # Fetch group list based on project
         self.getGroupsBtn = QPushButton(self)
         self.getGroupsBtn.setText('Get Groups')
         self.getGroupsBtn.move(400, 40)
         self.getGroupsBtn.resize(120, 36)
 
+        # Fetch query list based on groups
         self.getQueriesBtn = QPushButton(self)
         self.getQueriesBtn.setText('Get Queries')
         self.getQueriesBtn.move(540, 40)
         self.getQueriesBtn.resize(120, 36)
-        
+
+        # Groups and selected groups, click item will move to another side, or click button to select/unselect all
         self.groups = SelectList(self)
         self.groups.addItems([])
         self.groups.size(240, 160)
@@ -160,6 +175,7 @@ class Downloader(QFrame):
         self.select['groups'].resize(240, 160)
         self.select['groups'].clicked(self.setUnselectGroupItem)
 
+        # Queries and selected queries, click item will move to another side, or click button to select/unselect all
         self.queries = SelectList(self)
         self.queries.addItems([])
         self.queries.size(240, 160)
@@ -192,6 +208,7 @@ class Downloader(QFrame):
         self.select['queries'].resize(240, 160)
         self.select['queries'].clicked(self.setUnselectQueriesItem)
 
+        # Display logs and progress
         self.log_text_box = QPlainTextEdit(self)
         self.log_text_box.setReadOnly(True)
         self.log_text_box.setLineWrapMode(QPlainTextEdit.NoWrap)
@@ -199,6 +216,7 @@ class Downloader(QFrame):
         self.log_text_box.resize(400, 140)
         self.log_text_box.appendPlainText('logs ...')
 
+        # Pre-defined period, 1W, 1M, 3M, 6M, 1Y
         self.p1 = QPushButton(self)
         self.p1.setText('1W')
         self.p1.move(20, 440)
@@ -229,6 +247,7 @@ class Downloader(QFrame):
         self.p5.resize(36, 30)
         self.p5.clicked.connect(self.period1Y)
 
+        # Select time zone, default is UTC
         self.utcBtn = QRadioButton(self)
         self.utcBtn.setText('UTC')
         self.utcBtn.setChecked(True)
@@ -244,6 +263,7 @@ class Downloader(QFrame):
         self.tzBtnGrp.addButton(self.utcBtn, 1)
         self.tzBtnGrp.addButton(self.nztBtn, 2)
 
+        # Set pre-defined time or custom start/end time
         self.startLabel = QLabel(self)
         self.startLabel.setText('Start')
         self.startLabel.setStyleSheet("font-family: Arial, sans-serif; font-size: 10pt;")
@@ -268,6 +288,7 @@ class Downloader(QFrame):
         self.endTime.move(510, 440)
         self.endTime.resize(150, 30)
 
+        # Set download file's format, default is CSV (delimiter with comma)
         self.formatLabel = QLabel(self)
         self.formatLabel.setText('Format')
         self.formatLabel.move(430, 480)
@@ -279,6 +300,7 @@ class Downloader(QFrame):
         self.formats.resize(165, 26)
         self.formats.currentIndexChanged.connect(self.changeFormat)
 
+        # Set order by attr, this list will only show after data is fetched
         self.orderbyLabel = QLabel(self)
         self.orderbyLabel.setText('OrderBy')
         self.orderbyLabel.move(430, 510)
@@ -289,6 +311,7 @@ class Downloader(QFrame):
         self.orderby.move(495, 510)
         self.orderby.resize(165, 26)
 
+        # Order direction of data
         self.orderLabel = QLabel(self)
         self.orderLabel.setText('Order')
         self.orderLabel.move(430, 540)
@@ -299,6 +322,7 @@ class Downloader(QFrame):
         self.order.move(495, 540)
         self.order.resize(165, 26)
 
+        # Set save file path, you can click first button to select folder/file, if you select folder, default file name will be appended, you can change it manually. You also can open second button to open destination folder.
         self.saveLabel = QLabel(self)
         self.saveLabel.setText('Save to')
         self.saveLabel.move(430, 565)
@@ -320,17 +344,19 @@ class Downloader(QFrame):
         self.openSaveBtn.move(636, 568)
         self.openSaveBtn.resize(24, 24)
 
-
+        # Fetch data based on the filter selection, this should be clicked before download button.
         self.fetchBtn = QPushButton(self)
         self.fetchBtn.setText('Fetch Data')
         self.fetchBtn.move(430, 595)
         self.fetchBtn.resize(100, 30)
 
+        # Save data locally, this can only be used after data fetched.
         self.downloadBtn = QPushButton(self)
         self.downloadBtn.setText('Download')
         self.downloadBtn.move(560, 595)
         self.downloadBtn.resize(100, 30)
 
+    # Open folder/file selector
     def getOpenFilesAndDirs(self, parent=None, caption='', directory='', filter='', initialFilter='', options=None):
         def updateText():
             selected = []
@@ -360,6 +386,7 @@ class Downloader(QFrame):
         dialog.exec_()
         return dialog.selectedFiles()
 
+    # Convert path depends on the platform
     def convertPath(self, originalPath):
         if platform.system() == 'Windows':
             p = originalPath.replace('/','\\')
@@ -367,6 +394,7 @@ class Downloader(QFrame):
             p = originalPath
         return p
     
+    # Save path
     def setSavePath(self, text):
         self.savePath = text
 
@@ -387,6 +415,7 @@ class Downloader(QFrame):
             else:
                 os.system('xdg-open "%s"' % filepath)
 
+    # If the format is changed, the ext can be changed automatically
     def changeFormat(self):
         if os.path.isdir(self.savePath):
             self.savePath = self.savePath + '/dataset'
@@ -399,6 +428,7 @@ class Downloader(QFrame):
             self.savePath = pre + '.csv'
         self.saveInput.setText(self.savePath)
     
+    # Set time period actions
     def period1W(self):
         self.startTime.setDateTime(datetime.strptime(self.endTime.text(), '%Y-%m-%d %H:%M') - timedelta(days=7))
     
@@ -414,13 +444,11 @@ class Downloader(QFrame):
     def period1Y(self):
         self.startTime.setDateTime(datetime.strptime(self.endTime.text(), '%Y-%m-%d %H:%M') - timedelta(days=365))
 
+    # Set username
     def setUsername(self, username):
         self.userLabel.setText('Current user: ' + username)
 
-    def setProjects(self, projects):
-        self.projects.clear()
-        self.projects.addItems(projects)
-
+    # Set button actions
     def setGetGroupsAction(self, func):
         self.getGroupsBtn.clicked.connect(func)
 
@@ -435,6 +463,11 @@ class Downloader(QFrame):
 
     def setTimezone(self, func):
         self.tzBtnGrp.buttonClicked.connect(func)
+
+    # Set dataset
+    def setProjects(self, projects):
+        self.projects.clear()
+        self.projects.addItems(projects)
 
     def setGroups(self, groups):
         self.groups.clear()
@@ -515,13 +548,16 @@ class Downloader(QFrame):
         self.select['queries'].addItems(queries)
         self.select['queries'].sort()
 
+    # Set icon image from base64
     def iconFromBase64(self, base64):
         pixmap = QPixmap()
         pixmap.loadFromData(QByteArray.fromBase64(base64))
         icon = QIcon(pixmap)
         return icon
 
+# Multi-thread worker object
 class Worker(QObject):
+    # Set signal to get updates
     finished = pyqtSignal()
     BWObject = pyqtSignal(object)
     results = pyqtSignal(object)
@@ -529,6 +565,7 @@ class Worker(QObject):
 
     BW = None
 
+    # Set parameters
     def setProject(self, project):
         self.project = project
 
@@ -563,7 +600,9 @@ class Worker(QObject):
         self.username = username
         self.pwd = pwd
 
+    # Run thread
     def run(self):
+        # Set default value if Brandwatch object exists, default terminate is False, and set logger
         if self.BW is not None:
             self.BW.terminate(False)
             self.BW.setLogger(self.logger)
@@ -676,6 +715,7 @@ class Window(QWidget):
         self.setFixedWidth(680)
         self.setFixedHeight(640)
 
+        # Check token exists or not
         if os.path.isfile('.brandwatch_token'):
             try:
                 f = open('.brandwatch_token','r')
@@ -686,11 +726,14 @@ class Window(QWidget):
                 self.BW = Brandwatch(token_path='.brandwatch_token')
         else:
             self.BW = Brandwatch(token_path='.brandwatch_token')
+        
+        # Set 60 seconds delay to retry if rate limit reach
         self.BW.set_delay(60)
         
         self.login = LoginForm(self)
         self.downloader = Downloader(self)
 
+        # If user token not exist/expire, show login layer, otherwise show download layer
         self.user = self.BW.getUser()
         self.login.func(self.loginAction)
         if self.user == None:
@@ -698,12 +741,14 @@ class Window(QWidget):
         else:
             self.downloaderUI()
     
+    # Display logs
     def loggerHandler(self, value):
         if value == 'Token is invalid or expired':
             self.loginUI()
         else:
             self.downloader.log_text_box.appendPlainText(value)
 
+    # Update parameters
     def updateBW(self, BW):
         self.BW = BW
 
@@ -734,6 +779,7 @@ class Window(QWidget):
         self.downloader.setOrderby(data.columns.tolist())
         self.downloader.setDataset(data)
 
+    # Save data locally
     def downloadData(self):
         self.downloader.downloadBtn.setEnabled(False)
         self.loggerHandler('Downloading dataset ...')
@@ -758,8 +804,10 @@ class Window(QWidget):
             self.loggerHandler('Error: ' + str(e))
             pass
         self.loggerHandler('Downloaded dataset into ' + self.downloader.savePath)
+        self.loggerHandler('-------------------------------')
         self.downloader.downloadBtn.setEnabled(True)
     
+    # Extract username from BWUser object
     def getUsername(self, user):
         try:
             username = ' '.join(user.__dict__['username'].split('@')[0].split('.'))
@@ -767,9 +815,11 @@ class Window(QWidget):
             username = user
         return username
 
+    # Extract project name from BWProject object list
     def getProjectname(self, projects):
         return list(map(lambda x: str(x['name']), projects))
 
+    # Login action, login with token or username/password
     def loginAction(self):
         self.login.msg.setStyleSheet('color: #1E8449;')
         self.login.msg.setText('Logging ...')
@@ -792,11 +842,13 @@ class Window(QWidget):
         self.loginWorker.results.connect(self.updateUser)
         self.loginThread.start()
 
+    # Set login layer visible
     def loginUI(self):
         self.login.msg.setText('')
         self.login.setVisible(True)
         self.downloader.setVisible(False)
 
+    # Set download layer visible
     def downloaderUI(self):
         self.downloader.setUsername(self.getUsername(self.user))
         self.login.setVisible(True)
@@ -825,9 +877,11 @@ class Window(QWidget):
 
         self.projectsThread.finished.connect(lambda: self.downloader.setVisible(True))
         self.projectsThread.finished.connect(lambda: self.login.setVisible(False))
+        self.projectsThread.finished.connect(lambda: self.login.loginBtn.setEnabled(True))
         self.projectsThread.finished.connect(lambda: self.loggerHandler('Project list fetched'))
         self.projectsThread.finished.connect(lambda: self.loggerHandler('-------------------------------'))
 
+    # Set Get groups button action
     def getGroupsAction(self):
         self.downloader.getGroupsBtn.setEnabled(False)
         self.loggerHandler('Fetching group list by project['+self.downloader.projects.currentText()+']...')
@@ -849,6 +903,7 @@ class Window(QWidget):
         self.groupsThread.finished.connect(lambda: self.loggerHandler('-------------------------------'))
         self.groupsThread.finished.connect(lambda: self.downloader.getGroupsBtn.setEnabled(True))
 
+    # Set Get queries button action
     def getQueriesAction(self):
         self.downloader.getQueriesBtn.setEnabled(False)
         self.queriesThread = QThread()
@@ -877,14 +932,15 @@ class Window(QWidget):
         self.queriesThread.finished.connect(lambda: self.loggerHandler('-------------------------------'))
         self.queriesThread.finished.connect(lambda: self.downloader.getQueriesBtn.setEnabled(True))
 
+    # Set fetch data button action
     def fetchDataAction(self):
         self.downloader.fetchBtn.setEnabled(False)
         if self.downloader.nztBtn.isChecked():
-            start = self.BW.NZT2UTC(self.downloader.startTime.text())
-            end = self.BW.NZT2UTC(self.downloader.endTime.text())
+            start = self.BW.NZT2UTC(self.downloader.startTime.text()+':00')
+            end = self.BW.NZT2UTC(self.downloader.endTime.text()+':00')
         elif self.downloader.utcBtn.isChecked():
-            start = self.downloader.startTime.text().replace(' ', 'T')
-            end = self.downloader.endTime.text().replace(' ', 'T')
+            start = (self.downloader.startTime.text()+':00').replace(' ', 'T')
+            end = (self.downloader.endTime.text()+':00').replace(' ', 'T')
         self.loggerHandler('Fetching mentions ...')
         self.mentionsThread = QThread()
         self.mentionsWorker = Worker()
@@ -892,8 +948,8 @@ class Window(QWidget):
         self.mentionsWorker.setType('getMentions')
         self.mentionsWorker.setProject(self.downloader.projects.currentText())
         self.mentionsWorker.setQueries(self.downloader.select['queries'].getItems())
-        self.mentionsWorker.setStart(start+':00')
-        self.mentionsWorker.setEnd(end+':00')
+        self.mentionsWorker.setStart(start)
+        self.mentionsWorker.setEnd(end)
         self.mentionsWorker.moveToThread(self.mentionsThread)
         self.mentionsThread.started.connect(self.mentionsWorker.run)
         self.mentionsWorker.finished.connect(self.mentionsThread.quit)
@@ -907,6 +963,7 @@ class Window(QWidget):
         self.mentionsThread.finished.connect(lambda: self.loggerHandler('-------------------------------'))
         self.mentionsThread.finished.connect(lambda: self.downloader.fetchBtn.setEnabled(True))
 
+    # Convert time
     def timeConvert(self, object):
         id = self.downloader.tzBtnGrp.id(object)
         if id == 1:
@@ -918,12 +975,6 @@ class Window(QWidget):
 
     def remove_duplicates(self, l):
         return list(set(l))
-
-    def iconFromBase64(self, base64):
-        pixmap = QPixmap()
-        pixmap.loadFromData(QByteArray.fromBase64(base64))
-        icon = QIcon(pixmap)
-        return icon
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
