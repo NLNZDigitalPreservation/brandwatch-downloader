@@ -804,6 +804,7 @@ class Window(QWidget):
             self.loggerHandler('Error: ' + str(e))
             pass
         self.loggerHandler('Downloaded dataset into ' + self.downloader.savePath)
+        self.loggerHandler('-------------------------------')
         self.downloader.downloadBtn.setEnabled(True)
     
     # Extract username from BWUser object
@@ -935,11 +936,11 @@ class Window(QWidget):
     def fetchDataAction(self):
         self.downloader.fetchBtn.setEnabled(False)
         if self.downloader.nztBtn.isChecked():
-            start = self.BW.NZT2UTC(self.downloader.startTime.text())
-            end = self.BW.NZT2UTC(self.downloader.endTime.text())
+            start = self.BW.NZT2UTC(self.downloader.startTime.text()+':00')
+            end = self.BW.NZT2UTC(self.downloader.endTime.text()+':00')
         elif self.downloader.utcBtn.isChecked():
-            start = self.downloader.startTime.text().replace(' ', 'T')
-            end = self.downloader.endTime.text().replace(' ', 'T')
+            start = (self.downloader.startTime.text()+':00').replace(' ', 'T')
+            end = (self.downloader.endTime.text()+':00').replace(' ', 'T')
         self.loggerHandler('Fetching mentions ...')
         self.mentionsThread = QThread()
         self.mentionsWorker = Worker()
@@ -947,8 +948,8 @@ class Window(QWidget):
         self.mentionsWorker.setType('getMentions')
         self.mentionsWorker.setProject(self.downloader.projects.currentText())
         self.mentionsWorker.setQueries(self.downloader.select['queries'].getItems())
-        self.mentionsWorker.setStart(start+':00')
-        self.mentionsWorker.setEnd(end+':00')
+        self.mentionsWorker.setStart(start)
+        self.mentionsWorker.setEnd(end)
         self.mentionsWorker.moveToThread(self.mentionsThread)
         self.mentionsThread.started.connect(self.mentionsWorker.run)
         self.mentionsWorker.finished.connect(self.mentionsThread.quit)
