@@ -10,8 +10,9 @@ logger.setLevel(logging.ERROR)
 
 class Brandwatch:
     
-    version = "0.1.0"
+    version = "1.0"
     
+    # Set default parameter
     def __init__(self, token = None, token_path = 'tokens.txt', username = None, password = None, terminate = False, logger = None):
         self.__token = token
         self.__token_path = token_path
@@ -28,6 +29,7 @@ class Brandwatch:
         self.__terminate = terminate
         self.__logger = logger
         
+    # Allow pandas dataframe display all rows and columns, default to 60 rows and 20 columns
     def set_display_all(self, flag = True):
         if flag is True:
             pd.set_option('display.max_rows', None)
@@ -36,15 +38,19 @@ class Brandwatch:
             pd.set_option('display.max_rows', 60)
             pd.set_option('display.max_columns', 20)
 
+    # Set delay time to retry if rate limit reach, default to 30 seconds
     def set_delay(self, delay = 30):
         self.__delay = delay
         
+    # Set terminate signal when using GUI to interrupt
     def terminate(self, flag):
         self.__terminate = flag
 
+    # Set logger to update log info to GUI
     def setLogger(self, logger):
         self.__logger = logger
 
+    # Get user object with username/password or token
     def getUser(self):
         self.__user = None
         if self.__terminate:
@@ -71,6 +77,7 @@ class Brandwatch:
                     self.__logger.emit('Error: '+str(e))
         return self.__user
     
+    # Get BWProject object list, need to extract 'name' attr
     def getProjects(self):
         self.__projects = None
         if self.__terminate:
@@ -103,6 +110,7 @@ class Brandwatch:
                         self.__logger.emit('Error: '+str(e))
         return self.__projects
         
+    # Get BWProject object
     def getProject(self, project):
         self.__project = None
         if self.__terminate:
@@ -127,7 +135,8 @@ class Brandwatch:
                 if self.__logger is not None:
                     self.__logger.emit('Error: '+str(e))
         return self.__project
-               
+
+    # Get BWGroup object based on BWProject
     def getGroupInst(self, project):
         self.__groups = None
         if self.__terminate:
@@ -153,6 +162,7 @@ class Brandwatch:
                     self.__logger.emit('Error: '+str(e))
         return self.__groups
         
+    # Get BWGroup object list, need to extract 'name' attr
     def getGroups(self, project):
         self.__groups = None
         if self.__terminate:
@@ -163,6 +173,7 @@ class Brandwatch:
             self.getGroupInst(self.__project)
         return self.__groups
         
+    # Get BWQuery object
     def getQueryInst(self, project):
         self.__queries = None
         if self.__terminate:
@@ -187,7 +198,8 @@ class Brandwatch:
                 if self.__logger is not None:
                     self.__logger.emit('Error: '+str(e))
         return self.__queries
-                
+    
+    # Get BWQueries object list, need to extract 'name' attr
     def getQueries(self, project):
         self.__queries = None
         if self.__terminate:
@@ -198,6 +210,7 @@ class Brandwatch:
             self.getQueryInst(self.__project)
         return self.__queries
 
+    # Get BWQueries object list by group name, need to extract 'name' attr
     def getQueriesByGroup(self, group):
         self.__groups_queries = None
         if self.__terminate:
@@ -230,6 +243,7 @@ class Brandwatch:
             logging.info('Please retrieve groups by project first ...')
         return self.__groups_queries
         
+    # Get mentions with project name,  query name, start and end time
     def getMentions(self, project, name, start, end):
         self.__mentions = None
         if self.__terminate:
@@ -262,18 +276,20 @@ class Brandwatch:
                         self.__logger.emit('Error: '+str(e))
         return self.__mentions
 
-    
+    # Convert projects raw data from json to dataframe
     def ProjectsDF(self):
         df = pd.DataFrame(self.__projects)
         return df
-        
+
+    # Convert groups raw data from json to dataframe    
     def GroupsDF(self):
         if self.__groups is not None:
             df = pd.DataFrame([[k,v] for k, v in self.__groups.names.items()], columns = ["id", "name"])
         else:
             df = pd.DataFrame(self.__groups)
         return df
-        
+
+    # Convert queries raw data from json to dataframe    
     def QueriesDF(self):
         if self.__queries is not None:
             df = pd.DataFrame([[k, v] for k, v in self.__queries.names.items()], columns = ["id", "name"])
@@ -281,46 +297,55 @@ class Brandwatch:
             df = pd.DataFrame(self.__queries)
         return df
    
+    # Convert queries raw data from json to dataframe
     def GroupQueriesDF(self):
         if self.__groups_queries is not None:
             df = pd.DataFrame([[v, k] for k, v in self.__groups_queries.items()], columns = ["id", "name"])
         else:
             df = pd.DataFrame(self.__groups_queries)
         return df
-      
+
+    # Convert mentions raw data from json to dataframe  
     def MentionsDF(self):
         df = pd.DataFrame(self.__mentions)
         return df
     
-    
+    # Print groups 
     def displayGroups(self):
-        logging.info(self.GroupsDF())
+        print(self.GroupsDF())
  
+    # Print projects
     def displayProjects(self):
-        logging.info(self.ProjectsDF())
+        print(self.ProjectsDF())
     
+    # Print queries
     def displayQueries(self):
-        logging.info(self.QueryDF())
+        print(self.QueryDF())
 
+    # Print queries
     def displayGroupQueries(self):
-        logging.info(self.QueryDF())
-        
-    def displayMentions(self):
-        logging.info(self.ProjectsDF())
+        print(self.QueryDF())
 
-        
+    # Print mentions    
+    def displayMentions(self):
+        print(self.ProjectsDF())
+ 
+    # Convert time with timezone to UTC
     def timeconvertToUTC(self, timestr, tz):
         original = timezone(tz).localize(datetime.strptime(timestr, '%Y-%m-%d %H:%M:%S'))
         utc = original.astimezone(timezone('UTC'))
         return utc.strftime('%Y-%m-%dT%H:%M:%S')
 
+    # Convert time with timezone from UTC
     def timeconvertFromUTC(self, timestr, tz):
         utc = timezone('UTC').localize(datetime.strptime(timestr, '%Y-%m-%dT%H:%M:%S'))
         dest = utc.astimezone(timezone(tz))
         return dest.strftime('%Y-%m-%d %H:%M:%S')
 
+    # Convert NZT to UTC
     def NZT2UTC(self, timestr):
         return self.timeconvertToUTC(timestr, 'Pacific/Auckland')
 
+    # Convert UTC to NZT
     def UTC2NZT(self, timestr):
         return self.timeconvertFromUTC(timestr, 'Pacific/Auckland')
