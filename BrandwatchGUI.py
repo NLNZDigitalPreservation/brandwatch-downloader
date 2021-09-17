@@ -808,6 +808,9 @@ class Window(QWidget):
         format = self.downloader.formats.currentText()
         df = pd.DataFrame([])
         try:
+            filepath = os.path.dirname(self.downloader.savePath)
+            if not os.path.exists(filepath):
+                os.mkdir(filepath)
             if order == 'ASC':
                 df = self.downloader.dataset.sort_values(by = self.downloader.orderby.currentText(), ascending = True)
             elif order == 'DESC':
