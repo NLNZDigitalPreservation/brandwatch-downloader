@@ -71,7 +71,7 @@ class LoginForm(QFrame):
     # Set click action for login button
     def func(self, loginFunc):
         self.loginBtn.clicked.connect(loginFunc)
-    
+
     def paintEvent(self, event):
         self.seperator = QPainter()
         self.seperator.begin(self)
@@ -153,7 +153,7 @@ class Downloader(QFrame):
         self.getQueriesBtn.move(540, 40)
         self.getQueriesBtn.resize(120, 36)
         self.getQueriesBtn.setToolTip('Get queries of selected groups')
-
+  
         # Groups and selected groups, click item will move to another side, or click button to select/unselect all
         self.groups = SelectList(self)
         self.groups.addItems([])
