@@ -429,10 +429,11 @@ class Downloader(QFrame):
                 filepath = os.path.dirname(self.savePath)
             else:
                 filepath = self.savePath
-            if platform.system() == 'Windows':
-                os.system(f'start {os.path.realpath(filepath)}')
-            else:
-                os.system('xdg-open "%s"' % filepath)
+            if os.path.exists(filepath):
+                if platform.system() == 'Windows':
+                    os.system(f'start {os.path.realpath(filepath)}')
+                else:
+                    os.system('xdg-open "%s"' % filepath)
 
     # If the format is changed, the ext can be changed automatically
     def changeFormat(self):
@@ -807,6 +808,9 @@ class Window(QWidget):
         format = self.downloader.formats.currentText()
         df = pd.DataFrame([])
         try:
+            filepath = os.path.dirname(self.downloader.savePath)
+            if not os.path.exists(filepath):
+                os.makedirs(filepath, exist_ok=True)
             if order == 'ASC':
                 df = self.downloader.dataset.sort_values(by = self.downloader.orderby.currentText(), ascending = True)
             elif order == 'DESC':
