@@ -439,6 +439,7 @@ class Downloader(QFrame):
     def changeFormat(self):
         if os.path.isdir(self.savePath):
             self.savePath = self.savePath + '/dataset'
+        self.savePath = self.convertPath(self.savePath)
         pre, ext = os.path.splitext(self.savePath)
         if self.formats.currentText() == 'JSON':
             self.savePath = pre + '.json'
