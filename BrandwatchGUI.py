@@ -439,6 +439,7 @@ class Downloader(QFrame):
     def changeFormat(self):
         if os.path.isdir(self.savePath):
             self.savePath = self.savePath + '/dataset'
+        self.savePath = self.convertPath(self.savePath)
         pre, ext = os.path.splitext(self.savePath)
         if self.formats.currentText() == 'JSON':
             self.savePath = pre + '.json'
@@ -810,7 +811,7 @@ class Window(QWidget):
         try:
             filepath = os.path.dirname(self.downloader.savePath)
             if not os.path.exists(filepath):
-                os.mkdir(filepath)
+                os.makedirs(filepath, exist_ok=True)
             if order == 'ASC':
                 df = self.downloader.dataset.sort_values(by = self.downloader.orderby.currentText(), ascending = True)
             elif order == 'DESC':
