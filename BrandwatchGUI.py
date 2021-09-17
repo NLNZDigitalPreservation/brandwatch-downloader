@@ -14,8 +14,8 @@ class LoginForm(QFrame):
 
         self.gb = QGroupBox(self)
         self.gb.setStyleSheet('QGroupBox {border: 1px solid #D5DBDB; border-radius: 10px;}')
-        self.gb.move(180, 140)
-        self.gb.resize(360, 280)
+        self.gb.move(130, 140)
+        self.gb.resize(460, 280)
         
         self.gbLabel = QLabel('Login', self)
         self.gbLabel.setStyleSheet('QLabel {border: 1px solid #D5DBDB; background-color: #D0D3D4; border-radius: 5px; font-family: Arial, sans-serif; font-size: 12pt; font-style: italic;}')
@@ -35,41 +35,51 @@ class LoginForm(QFrame):
         # Token input area
         self.tokenLabel = QLabel('Token', self)
         self.tokenLabel.setStyleSheet("font-family: Arial, sans-serif; font-size: 12pt;")
-        self.tokenLabel.move(220, 200)
+        self.tokenLabel.move(160, 200)
         self.tokenLabel.resize(90,36)
         self.tokenInput = QLineEdit(self)
         self.tokenInput.setStyleSheet("font-family: Arial, sans-serif; border: 1px solid grey; border-radius: 5px; font-size: 12pt;")
-        self.tokenInput.move(320, 200)
-        self.tokenInput.resize(180, 36)
+        self.tokenInput.move(250, 200)
+        self.tokenInput.resize(320, 36)
 
         # Username/Password input area
         self.userLabel = QLabel('Username', self)
         self.userLabel.setStyleSheet("font-family: Arial, sans-serif; font-size: 12pt;")
-        self.userLabel.move(220, 250)
+        self.userLabel.move(160, 265)
         self.userLabel.resize(90,36)
         self.userInput = QLineEdit(self)
         self.userInput.setStyleSheet("font-family: Arial, sans-serif; border: 1px solid grey; border-radius: 5px; font-size: 12pt;")
-        self.userInput.move(320, 250)
-        self.userInput.resize(180, 36)
+        self.userInput.move(250, 265)
+        self.userInput.resize(320, 36)
 
         self.pwdLabel = QLabel('Password', self)
         self.pwdLabel.setStyleSheet("font-family: Arial, sans-serif; font-size: 12pt;")
-        self.pwdLabel.move(220, 310)
+        self.pwdLabel.move(160, 310)
         self.pwdLabel.resize(90,36)
         self.pwdInput = QLineEdit(self)
+        self.pwdInput.setEchoMode(QLineEdit.Password)
         self.pwdInput.setStyleSheet("font-family: Arial, sans-serif; border: 1px solid grey; border-radius: 5px; font-size: 12pt;")
-        self.pwdInput.move(320, 310)
-        self.pwdInput.resize(180, 36)
+        self.pwdInput.move(250, 310)
+        self.pwdInput.resize(320, 36)
 
         self.loginBtn = QPushButton(self)
         self.loginBtn.setText('Login')
         self.loginBtn.setStyleSheet("font-family: Arial, sans-serif; font-size: 12pt;")
         self.loginBtn.move(300, 360)
-        self.loginBtn.resize(120, 36)
+        self.loginBtn.resize(120, 32)
 
     # Set click action for login button
     def func(self, loginFunc):
         self.loginBtn.clicked.connect(loginFunc)
+    
+    def paintEvent(self, event):
+        self.seperator = QPainter()
+        self.seperator.begin(self)
+        self.seperator.setRenderHint(QPainter.Antialiasing)
+        self.seperator.setPen(Qt.gray)
+        self.seperator.setBrush(Qt.white)
+        self.seperator.drawLine(150,250,570,250)
+        self.seperator.end()
 
 # Custom list menu 
 class SelectList(QListWidget):
@@ -135,12 +145,14 @@ class Downloader(QFrame):
         self.getGroupsBtn.setText('Get Groups')
         self.getGroupsBtn.move(400, 40)
         self.getGroupsBtn.resize(120, 36)
+        self.getGroupsBtn.setToolTip('Get groups of selected project')
 
         # Fetch query list based on groups
         self.getQueriesBtn = QPushButton(self)
         self.getQueriesBtn.setText('Get Queries')
         self.getQueriesBtn.move(540, 40)
         self.getQueriesBtn.resize(120, 36)
+        self.getQueriesBtn.setToolTip('Get queries of selected groups')
 
         # Groups and selected groups, click item will move to another side, or click button to select/unselect all
         self.groups = SelectList(self)
@@ -161,12 +173,14 @@ class Downloader(QFrame):
         self.selectAllgroups.move(280, 135)
         self.selectAllgroups.resize(120, 30)
         self.selectAllgroups.clicked.connect(self.setSelectAllGroups)
+        self.selectAllgroups.setToolTip('Select all groups')
 
         self.unselectAllgroups = QPushButton(self)
         self.unselectAllgroups.setText('<< Unselect all')
         self.unselectAllgroups.move(280, 185)
         self.unselectAllgroups.resize(120, 30)
         self.unselectAllgroups.clicked.connect(self.setUnselectAllGroups)
+        self.unselectAllgroups.setToolTip('Unselect all groups')
 
         self.select['groups'] = SelectList(self)
         self.select['groups'].addItems([])
@@ -194,12 +208,14 @@ class Downloader(QFrame):
         self.selectAllqueries.move(280, 310)
         self.selectAllqueries.resize(120, 30)
         self.selectAllqueries.clicked.connect(self.setSelectAllQueries)
+        self.selectAllqueries.setToolTip('Select all queries')
 
         self.unselectAllquries = QPushButton(self)
         self.unselectAllquries.setText('<< Unselect all')
         self.unselectAllquries.move(280, 360)
         self.unselectAllquries.resize(120, 30)
         self.unselectAllquries.clicked.connect(self.setUnselectAllQueries)
+        self.unselectAllquries.setToolTip('Unselect all queries')
 
         self.select['queries'] = SelectList(self)
         self.select['queries'].addItems([])
@@ -214,7 +230,7 @@ class Downloader(QFrame):
         self.log_text_box.setLineWrapMode(QPlainTextEdit.NoWrap)
         self.log_text_box.move(20, 480)
         self.log_text_box.resize(400, 140)
-        self.log_text_box.appendPlainText('logs ...')
+        self.log_text_box.appendPlainText('')
 
         # Pre-defined period, 1W, 1M, 3M, 6M, 1Y
         self.p1 = QPushButton(self)
@@ -222,30 +238,35 @@ class Downloader(QFrame):
         self.p1.move(20, 440)
         self.p1.resize(36, 30)
         self.p1.clicked.connect(self.period1W)
+        self.p1.setToolTip('Pre defined 1 week')
 
         self.p2 = QPushButton(self)
         self.p2.setText('1M')
         self.p2.move(56, 440)
         self.p2.resize(36, 30)
         self.p2.clicked.connect(self.period1M)
+        self.p2.setToolTip('Pre defined 1 month')
 
         self.p3 = QPushButton(self)
         self.p3.setText('3M')
         self.p3.move(92, 440)
         self.p3.resize(36, 30)
         self.p3.clicked.connect(self.period3M)
+        self.p3.setToolTip('Pre defined 3 months')
 
         self.p4 = QPushButton(self)
         self.p4.setText('6M')
         self.p4.move(128, 440)
         self.p4.resize(36, 30)
         self.p4.clicked.connect(self.period6M)
+        self.p4.setToolTip('Pre defined 6 months')
 
         self.p5 = QPushButton(self)
         self.p5.setText('1Y')
         self.p5.move(164, 440)
         self.p5.resize(36, 30)
         self.p5.clicked.connect(self.period1Y)
+        self.p5.setToolTip('Pre defined 1 year')
 
         # Select time zone, default is UTC
         self.utcBtn = QRadioButton(self)
@@ -288,39 +309,40 @@ class Downloader(QFrame):
         self.endTime.move(510, 440)
         self.endTime.resize(150, 30)
 
+        # Fetch data based on the filter selection, this should be clicked before download button.
+        self.fetchBtn = QPushButton(self)
+        self.fetchBtn.setText('Fetch Data')
+        self.fetchBtn.move(495, 480)
+        self.fetchBtn.resize(100, 26)
+        self.fetchBtn.setToolTip('Fetch data from Brandwatch')
+
         # Set download file's format, default is CSV (delimiter with comma)
         self.formatLabel = QLabel(self)
         self.formatLabel.setText('Format')
-        self.formatLabel.move(430, 480)
+        self.formatLabel.move(430, 510)
         self.formatLabel.resize(60, 26)
 
         self.formats = QComboBox(self)
         self.formats.addItems(['CSV (delimiter with comma)', 'CSV (delimiter with pipe)','EXCEL', 'JSON'])
-        self.formats.move(495, 480)
+        self.formats.move(495, 510)
         self.formats.resize(165, 26)
         self.formats.currentIndexChanged.connect(self.changeFormat)
 
         # Set order by attr, this list will only show after data is fetched
         self.orderbyLabel = QLabel(self)
         self.orderbyLabel.setText('OrderBy')
-        self.orderbyLabel.move(430, 510)
+        self.orderbyLabel.move(430, 540)
         self.orderbyLabel.resize(60, 26)
 
         self.orderby = QComboBox(self)
         self.orderby.addItems([])
-        self.orderby.move(495, 510)
-        self.orderby.resize(165, 26)
-
-        # Order direction of data
-        self.orderLabel = QLabel(self)
-        self.orderLabel.setText('Order')
-        self.orderLabel.move(430, 540)
-        self.orderLabel.resize(60, 26)
+        self.orderby.move(495, 540)
+        self.orderby.resize(105, 26)
 
         self.order = QComboBox(self)
         self.order.addItems(['ASC','DESC'])
-        self.order.move(495, 540)
-        self.order.resize(165, 26)
+        self.order.move(600, 540)
+        self.order.resize(60, 26)
 
         # Set save file path, you can click first button to select folder/file, if you select folder, default file name will be appended, you can change it manually. You also can open second button to open destination folder.
         self.saveLabel = QLabel(self)
@@ -338,23 +360,20 @@ class Downloader(QFrame):
         self.saveBtn.clicked.connect(self.saveSelector)
         self.saveBtn.move(610, 568)
         self.saveBtn.resize(24, 24)
+        self.saveBtn.setToolTip('Choose file or folder to save data')
         self.openSaveBtn = QPushButton(self)
         self.openSaveBtn.setIcon(self.iconFromBase64(self.icon_folder))
         self.openSaveBtn.clicked.connect(self.saveOpen)
         self.openSaveBtn.move(636, 568)
         self.openSaveBtn.resize(24, 24)
-
-        # Fetch data based on the filter selection, this should be clicked before download button.
-        self.fetchBtn = QPushButton(self)
-        self.fetchBtn.setText('Fetch Data')
-        self.fetchBtn.move(430, 595)
-        self.fetchBtn.resize(100, 30)
+        self.openSaveBtn.setToolTip('Open destination folder')
 
         # Save data locally, this can only be used after data fetched.
         self.downloadBtn = QPushButton(self)
         self.downloadBtn.setText('Download')
-        self.downloadBtn.move(560, 595)
-        self.downloadBtn.resize(100, 30)
+        self.downloadBtn.move(495, 595)
+        self.downloadBtn.resize(100, 26)
+        self.downloadBtn.setToolTip('Download data to destination path')
 
     # Open folder/file selector
     def getOpenFilesAndDirs(self, parent=None, caption='', directory='', filter='', initialFilter='', options=None):
@@ -822,14 +841,15 @@ class Window(QWidget):
     # Login action, login with token or username/password
     def loginAction(self):
         self.login.msg.setStyleSheet('color: #1E8449;')
-        self.login.msg.setText('Logging ...')
         self.loginThread = QThread()
         self.loginWorker = Worker()
-        if self.login.tokenInput != None and self.login.tokenInput != '':
+        if self.login.tokenInput.text() != None and self.login.tokenInput.text() != '':
+            self.login.msg.setText('Verifying token ...')
             self.login.loginBtn.setEnabled(False)             
             self.loginWorker.setType('loginToken')
             self.loginWorker.setToken(self.login.tokenInput.text())
         else:
+            self.login.msg.setText('Verifying username/password ...')
             self.login.loginBtn.setEnabled(False) 
             self.loginWorker.setType('loginUser')
             self.loginWorker.setUserPwd(self.login.userInput.text(), self.login.pwdInput.text())
@@ -855,7 +875,7 @@ class Window(QWidget):
         self.downloader.setVisible(False)
 
         self.login.msg.setStyleSheet('color: #1E8449;')
-        self.login.msg.setText('Logging ...')
+        self.login.msg.setText('Verifying user credential ...')
         self.login.loginBtn.setEnabled(False)
 
         self.downloader.log_text_box.clear()
@@ -874,6 +894,10 @@ class Window(QWidget):
         self.projectsWorker.results.connect(self.updateProjects)
         self.projectsWorker.logger.connect(self.loggerHandler)
         self.projectsThread.start()
+
+        self.downloader.getQueriesBtn.setEnabled(False)
+        self.downloader.fetchBtn.setEnabled(False)
+        self.downloader.downloadBtn.setEnabled(False)
 
         self.projectsThread.finished.connect(lambda: self.downloader.setVisible(True))
         self.projectsThread.finished.connect(lambda: self.login.setVisible(False))
@@ -902,6 +926,9 @@ class Window(QWidget):
         self.groupsThread.finished.connect(lambda: self.loggerHandler('Group list fetched'))
         self.groupsThread.finished.connect(lambda: self.loggerHandler('-------------------------------'))
         self.groupsThread.finished.connect(lambda: self.downloader.getGroupsBtn.setEnabled(True))
+        self.groupsThread.finished.connect(lambda: self.downloader.getQueriesBtn.setEnabled(True))
+        self.groupsThread.finished.connect(lambda: self.downloader.fetchBtn.setEnabled(False))
+        self.groupsThread.finished.connect(lambda: self.downloader.downloadBtn.setEnabled(False))
 
     # Set Get queries button action
     def getQueriesAction(self):
@@ -928,9 +955,11 @@ class Window(QWidget):
         self.queriesWorker.logger.connect(self.loggerHandler)
         self.queriesThread.start()
 
-        self.queriesThread.finished.connect(lambda: self.loggerHandler('Quereies list fetched'))
+        self.queriesThread.finished.connect(lambda: self.loggerHandler('Queries list fetched'))
         self.queriesThread.finished.connect(lambda: self.loggerHandler('-------------------------------'))
         self.queriesThread.finished.connect(lambda: self.downloader.getQueriesBtn.setEnabled(True))
+        self.queriesThread.finished.connect(lambda: self.downloader.fetchBtn.setEnabled(True))
+        self.queriesThread.finished.connect(lambda: self.downloader.downloadBtn.setEnabled(False))
 
     # Set fetch data button action
     def fetchDataAction(self):
@@ -962,6 +991,7 @@ class Window(QWidget):
         self.mentionsThread.finished.connect(lambda: self.loggerHandler('Mentions fetched'))
         self.mentionsThread.finished.connect(lambda: self.loggerHandler('-------------------------------'))
         self.mentionsThread.finished.connect(lambda: self.downloader.fetchBtn.setEnabled(True))
+        self.mentionsThread.finished.connect(lambda: self.downloader.downloadBtn.setEnabled(True))
 
     # Convert time
     def timeConvert(self, object):
