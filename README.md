@@ -19,6 +19,33 @@ pip install pandas pytz openpyxl bcr-api PyQt5
 ![image](img/login.png)
 ![image](img/fetch.png)
 
+# Twitter API merge
+## Installation
+Use the package manager [pip](https://pip.pypa.io/en/stable/) to install necessary packages. 
+```bash
+pip install pandas twarc emoji requests
+```
+
+## Usage
+- Set credentials into .env file, the format should be
+```
+[credentials]
+consumer_key = xxxxx
+consumer_secret = xxxxx
+access_token = xxxxx
+access_token_secret = xxxxx
+```
+- Use command line with `python3 twitter.py <path>/brandwatch.csv <path>/twitter.csv [True|False]`, Replace <path> with the relative/absolute file path, \'brandwatch.csv\' is the file generated from brandwatch-downloader, \'twitter.csv\' is the output file, there is an optional parameter True or False for hash userid, default is True.
+- Please note, csv file is using \'|\' as delimiter.
+Example:
+```
+python3 twitter.py /home/brandwatch.csv /home/twitter.csv
+```
+or
+```
+python3 twitter.py /home/brandwatch.csv /home/twitter.csv False
+```
+
 ## Todo
 - Hashing user details
 - Duplication removal
