@@ -36,7 +36,7 @@ access_token = xxxxx
 access_token_secret = xxxxx
 ```
 - Use command line with `python3 twitter.py <path>/brandwatch.csv <path>/twitter.csv [True|False]`, Replace <path> with the relative/absolute file path, \'brandwatch.csv\' is the file generated from brandwatch-downloader, \'twitter.csv\' is the output file, there is an optional parameter True or False for hash userid, default is True.
-- Please note, csv file is using \'|\' as delimiter.
+- Please note, csv file is using \',\' as delimiter.
 Example:
 ```
 python3 twitter.py /home/brandwatch.csv /home/twitter.csv

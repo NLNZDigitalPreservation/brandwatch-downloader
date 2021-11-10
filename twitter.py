@@ -153,7 +153,7 @@ if __name__ == '__main__':
             else:
                 isHash = True
             print('Reading data from ',src)
-            df = pd.read_csv(src, sep='|')
+            df = pd.read_csv(src)
             df['tweetid']=df['url'].str.split('/').str[-1]
             ids = df['tweetid'].astype(int).tolist()
             df1 = df[['tweetid','sentiment','interest','reachEstimate']]
@@ -165,10 +165,10 @@ if __name__ == '__main__':
             df1.loc[:,'tweetid'] = df1.loc[:,'tweetid'].astype(int)
             data.loc[:,'tweetid'] = data.loc[:,'tweetid'].astype(int)
             data.merge(df1, on='tweetid')
-            data.to_csv(dest, sep='|', index=False)
+            data.to_csv(dest,escapechar="\\", doublequote=False, index=False)
             print('Datasets are merged and saved to ', dest)
     else:
         print('Please input source and destination file path like this,')
         print('\t python3 twitter.py <path>/brandwatch.csv <path>/twitter.csv [True|False]')
         print('* Replace <path> with the relative/absolute file path, \'brandwatch.csv\' is the file generated from brandwatch-downloader, \'twitter.csv\' is the output file, there is an optional parameter True or False for hash userid, default is True.')
-        print('* Please note, csv file is using \'|\' as delimiter.')
+        print('* Please note, csv file is using \',\' as delimiter.')
