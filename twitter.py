@@ -79,7 +79,7 @@ class Twitter:
                 user_name = item['user']['name']
                 user_screen_name = item['user']['screen_name']
                 tweet_url = "https://twitter.com/" + user_screen_name + "/status/" + str(item['id'])
-            
+        
             if 'full_text' in item:
                 tweet_text = emoji.demojize(item['full_text'].replace('\r\n', ' ').replace('\r', ' ').replace('\n', ' ').replace('\u2066', '').replace('\u2069', '').replace('|', '-'))
             elif 'text' in item:
@@ -148,8 +148,8 @@ if __name__ == '__main__':
         if 'credentials' in config:
             src = str(sys.argv[1])
             dest = str(sys.argv[2])
-            if len(sys.argv) == 4:
-                isHash = sys.argv[3]
+            if len(sys.argv) == 4 and str(sys.argv[3]) == 'False':
+                isHash = False
             else:
                 isHash = True
             print('Reading data from ',src)
@@ -165,7 +165,7 @@ if __name__ == '__main__':
             df1.loc[:,'tweetid'] = df1.loc[:,'tweetid'].astype(int)
             data.loc[:,'tweetid'] = data.loc[:,'tweetid'].astype(int)
             data.merge(df1, on='tweetid')
-            data.to_csv(dest,escapechar="\\", doublequote=False, index=False)
+            data.to_csv(dest,escapechar="\\", index=False)
             print('Datasets are merged and saved to ', dest)
     else:
         print('Please input source and destination file path like this,')
