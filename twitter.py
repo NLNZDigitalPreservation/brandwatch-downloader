@@ -8,6 +8,7 @@ import re, sys, configparser
 from datetime import datetime
 import pandas as pd
 pd.options.mode.chained_assignment = None 
+import numpy as np
 
 config = configparser.ConfigParser()
 config.read('.env')
@@ -155,15 +156,15 @@ if __name__ == '__main__':
             print('Reading data from ',src)
             df = pd.read_csv(src)
             df['tweetid']=df['url'].str.split('/').str[-1]
-            ids = df['tweetid'].astype(int).tolist()
+            ids = df['tweetid'].astype(np.int64).tolist()
             df1 = df[['tweetid','sentiment','interest','reachEstimate']]
             print(str(len(ids)),'ids are extracted from ',src)
             print('Fetching data from Twitter ...')
             t = Twitter(isHash)
             data = t.getItemsDF(ids)
             print(str(len(df)),' items are retrieved from Twitter')
-            df1.loc[:,'tweetid'] = df1.loc[:,'tweetid'].astype(int)
-            data.loc[:,'tweetid'] = data.loc[:,'tweetid'].astype(int)
+            df1.loc[:,'tweetid'] = df1.loc[:,'tweetid'].astype(np.int64)
+            data.loc[:,'tweetid'] = data.loc[:,'tweetid'].astype(np.int64)
             data.merge(df1, on='tweetid')
             data.to_csv(dest,escapechar="\\", index=False)
             print('Datasets are merged and saved to ', dest)
