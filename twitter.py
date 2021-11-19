@@ -165,8 +165,8 @@ if __name__ == '__main__':
             print(str(len(df)),' items are retrieved from Twitter')
             df1.loc[:,'tweetid'] = df1.loc[:,'tweetid'].astype(np.int64)
             data.loc[:,'tweetid'] = data.loc[:,'tweetid'].astype(np.int64)
-            data.merge(df1, on='tweetid')
-            data.to_csv(dest,escapechar="\\", index=False)
+            df2 = pd.merge(data, df1, on='tweetid')
+            df2.to_csv(dest,escapechar="\\", index=False)
             print('Datasets are merged and saved to ', dest)
     else:
         print('Please input source and destination file path like this,')
