@@ -96,10 +96,11 @@ class Twitter:
             retweeted_tweet_id = ''
             
             if "retweeted_status" in item and item['retweeted_status'] is not None:
-                retweeted_tweet_id = item["retweeted_status"]['id_str']
                 if self.isHash:
+                    retweeted_tweet_id = self.getHash(item["retweeted_status"]['id_str'])
                     retweeted_user_id = self.getUserDetails(item["retweeted_status"]['user']['id_str'], 'id')
                 else:
+                    retweeted_tweet_id = item["retweeted_status"]['id_str']
                     retweeted_user_id = item["retweeted_status"]['user']['id_str']
 
             in_reply_to_user_id_str = ''
@@ -157,7 +158,7 @@ if __name__ == '__main__':
             df = pd.read_csv(src)
             df['tweetid']=df['url'].str.split('/').str[-1]
             ids = df['tweetid'].astype(np.int64).tolist()
-            df1 = df[['tweetid','sentiment','interest','reachEstimate']]
+            df1 = df[['tweetid','accountType','added','categories','categoryDetails','checked','city','cityCode','continent','continentCode','country','countryCode','region','regionCode','locationName','engagementType','gender','impressions','insightsHashtag','insightsMentioned','interest','language','matchPositions','mediaFilter','mediaUrls','professions','queryId','queryName','reachEstimate','resourceType','sentiment','tags','threadCreated','updated','classifications','impact','imageMd5s','imageInfo']]
             print(str(len(ids)),'ids are extracted from ',src)
             print('Fetching data from Twitter ...')
             t = Twitter(isHash)
