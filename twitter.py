@@ -8,6 +8,7 @@ import re, sys, configparser
 from datetime import datetime
 import pandas as pd
 pd.options.mode.chained_assignment = None 
+import numpy as np
 
 config = configparser.ConfigParser()
 config.read('.env')
@@ -95,10 +96,11 @@ class Twitter:
             retweeted_tweet_id = ''
             
             if "retweeted_status" in item and item['retweeted_status'] is not None:
-                retweeted_tweet_id = item["retweeted_status"]['id_str']
                 if self.isHash:
+                    retweeted_tweet_id = self.getHash(item["retweeted_status"]['id_str'])
                     retweeted_user_id = self.getUserDetails(item["retweeted_status"]['user']['id_str'], 'id')
                 else:
+                    retweeted_tweet_id = item["retweeted_status"]['id_str']
                     retweeted_user_id = item["retweeted_status"]['user']['id_str']
 
             in_reply_to_user_id_str = ''
@@ -155,17 +157,17 @@ if __name__ == '__main__':
             print('Reading data from ',src)
             df = pd.read_csv(src)
             df['tweetid']=df['url'].str.split('/').str[-1]
-            ids = df['tweetid'].astype(int).tolist()
-            df1 = df[['tweetid','sentiment','interest','reachEstimate']]
+            ids = df['tweetid'].astype(np.int64).tolist()
+            df1 = df[['tweetid','accountType','added','categories','categoryDetails','checked','city','cityCode','continent','continentCode','country','countryCode','region','regionCode','locationName','engagementType','gender','impressions','insightsHashtag','insightsMentioned','interest','language','matchPositions','mediaFilter','mediaUrls','professions','queryId','queryName','reachEstimate','resourceType','sentiment','tags','threadCreated','updated','classifications','impact','imageMd5s','imageInfo']]
             print(str(len(ids)),'ids are extracted from ',src)
             print('Fetching data from Twitter ...')
             t = Twitter(isHash)
             data = t.getItemsDF(ids)
             print(str(len(df)),' items are retrieved from Twitter')
-            df1.loc[:,'tweetid'] = df1.loc[:,'tweetid'].astype(int)
-            data.loc[:,'tweetid'] = data.loc[:,'tweetid'].astype(int)
-            data.merge(df1, on='tweetid')
-            data.to_csv(dest,escapechar="\\", index=False)
+            df1.loc[:,'tweetid'] = df1.loc[:,'tweetid'].astype(np.int64)
+            data.loc[:,'tweetid'] = data.loc[:,'tweetid'].astype(np.int64)
+            df2 = pd.merge(data, df1, on='tweetid')
+            df2.to_csv(dest,escapechar="\\", index=False)
             print('Datasets are merged and saved to ', dest)
     else:
         print('Please input source and destination file path like this,')
