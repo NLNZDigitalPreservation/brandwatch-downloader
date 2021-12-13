@@ -26,7 +26,7 @@ class Twitter:
             self.consumer_secret = config['credentials']['consumer_secret']
             self.access_token = config['credentials']['access_token']
             self.access_token_secret = config['credentials']['access_token_secret']
-            self.t = Twarc(self.consumer_key, self.consumer_secret, self.access_token, self.access_token_secret)
+            self.t = Twarc(self.consumer_key, self.consumer_secret, self.access_token, self.access_token_secret, tweet_mode='extended')
             self.user_id_dict = {}
             self.user_name_dict = {}
             self.user_screen_name_dict = {}
@@ -80,8 +80,9 @@ class Twitter:
                 user_name = item['user']['name']
                 user_screen_name = item['user']['screen_name']
                 tweet_url = "https://twitter.com/" + user_screen_name + "/status/" + str(item['id'])
-        
-            if 'full_text' in item:
+            if 'retweeted_status' in item and 'full_text' in item['retweeted_status']:
+                tweet_text = emoji.demojize(item['retweeted_status']['full_text'].replace('\r\n', ' ').replace('\r', ' ').replace('\n', ' ').replace('\u2066', '').replace('\u2069', '').replace('|', '-'))
+            elif 'full_text' in item:
                 tweet_text = emoji.demojize(item['full_text'].replace('\r\n', ' ').replace('\r', ' ').replace('\n', ' ').replace('\u2066', '').replace('\u2069', '').replace('|', '-'))
             elif 'text' in item:
                 tweet_text = emoji.demojize(item['text'].replace('\r\n', ' ').replace('\r', ' ').replace('\n', ' ').replace('\u2066', '').replace('\u2069', '').replace('|', '-'))
@@ -156,6 +157,7 @@ if __name__ == '__main__':
                 isHash = True
             print('Reading data from ',src)
             df = pd.read_csv(src)
+            print(df.columns.values)
             df['tweetid']=df['url'].str.split('/').str[-1]
             ids = df['tweetid'].astype(np.int64).tolist()
             df1 = df[['tweetid','accountType','added','categories','categoryDetails','checked','city','cityCode','continent','continentCode','country','countryCode','region','regionCode','locationName','engagementType','gender','impressions','insightsHashtag','insightsMentioned','interest','language','matchPositions','mediaFilter','mediaUrls','professions','queryId','queryName','reachEstimate','resourceType','sentiment','tags','threadCreated','updated','classifications','impact','imageMd5s','imageInfo']]
