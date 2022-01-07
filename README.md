@@ -46,6 +46,19 @@ or
 python3 twitter.py /home/brandwatch.csv /home/twitter.csv False
 ```
 
+# Facebook data
+## Usage
+- Use command line with `python3 fb.py <path>/brandwatch.csv <path>/fb.csv [True|False]`, Replace <path> with the relative/absolute file path, \'brandwatch.csv\' is the file generated from brandwatch-downloader, \'fb.csv\' is the output file, there is an optional parameter True or False for hash userid, default is True.
+- Please note, csv file is using \',\' as delimiter.
+Example:
+```
+python3 fb.py /home/fb.csv /home/fb.csv
+```
+or
+```
+python3 fb.py /home/fb.csv /home/fb.csv False
+```
+
 ## Todo
 - Hashing user details
 - Duplication removal

@@ -157,10 +157,9 @@ if __name__ == '__main__':
                 isHash = True
             print('Reading data from ',src)
             df = pd.read_csv(src)
-            print(df.columns.values)
             df['tweetid']=df['url'].str.split('/').str[-1]
             ids = df['tweetid'].astype(np.int64).tolist()
-            df1 = df[['tweetid','accountType','added','categories','categoryDetails','checked','city','cityCode','continent','continentCode','country','countryCode','region','regionCode','locationName','engagementType','gender','impressions','insightsHashtag','insightsMentioned','interest','language','matchPositions','mediaFilter','mediaUrls','professions','queryId','queryName','reachEstimate','resourceType','sentiment','tags','threadCreated','updated','classifications','impact','imageMd5s','imageInfo']]
+            df1 = df[['tweetid','threadId','threadAuthor','threadCreated','threadEntryType','threadURL','title','fullname','accountType','added','categories','categoryDetails','checked','city','cityCode','continent','continentCode','country','countryCode','region','regionCode','locationName','longitude','latitude','twitterReplyCount','twitterPostCount','twitterVerified','twitterRole','subtype','engagementType','gender','impressions','insightsHashtag','insightsMentioned','interest','language','matchPositions','mediaFilter','mediaUrls','professions','queryId','queryName','reachEstimate','resourceType','sentiment','tags','updated','classifications','impact','imageMd5s','imageInfo']]
             print(str(len(ids)),'ids are extracted from ',src)
             print('Fetching data from Twitter ...')
             t = Twitter(isHash)
@@ -169,7 +168,70 @@ if __name__ == '__main__':
             df1.loc[:,'tweetid'] = df1.loc[:,'tweetid'].astype(np.int64)
             data.loc[:,'tweetid'] = data.loc[:,'tweetid'].astype(np.int64)
             df2 = pd.merge(data, df1, on='tweetid')
-            df2.to_csv(dest,escapechar="\\", index=False)
+            df3 = df2[['tweet_time']]
+            df3.columns = ['date'] 
+            df3['title'] = df2['title']
+            df3['text'] = df2['tweet_text']
+            df3['url'] = df2['tweet_url']
+            df3['text_language'] = df2['tweet_language']
+            df3['sentiment'] = df2['sentiment']
+            df3['emotion'] = df2['classifications']
+            df3['impact'] = df2['impact']
+            df3['impressions'] = df2['impressions']
+            df3['reach_estimate'] = df2['reachEstimate']
+            df3['interest'] = df2['interest']
+            df3['professions'] = df2['professions']
+            df3['media_urls'] = df2['mediaUrls']
+            df3['subtype'] = df2['subtype']
+            df3['engagement_type'] = df2['engagementType']        
+            
+            df3['user_id'] = df2['userid']
+            df3['user_name'] = df2['fullname']
+            df3['user_profile_description'] = df2['user_profile_description']
+            df3['user_profile_url'] = df2['user_profile_url']
+            df3['user_gender'] = df2['gender']
+            df3['user_account_language'] = df2['account_language']
+            df3['user_account_creation_date'] = df2['account_creation_date']
+            df3['user_account_type'] = df2['accountType']
+            df3['user_reported_location'] = df2['user_reported_location']
+
+            df3['post_city'] = df2['city']
+            df3['post_region'] = df2['region']
+            df3['post_country'] = df2['country']
+            df3['post_continent'] = df2['continentCode']
+            df3['post_longitude'] = df2['longitude']
+            df3['post_latitude'] = df2['latitude']
+
+            df3['user_screen_name'] = df2['user_screen_name']
+            df3['tweet_id'] = df2['tweetid']
+            df3['twitter_retweet_userid'] = df2['retweet_userid']
+            df3['twitter_retweet_tweetid'] = df2['retweet_tweetid']
+            df3['twitter_in_reply_to_userid'] = df2['in_reply_to_userid']
+            df3['twitter_in_reply_to_tweetid'] = df2['in_reply_to_tweetid']
+            df3['twitter_reply_count'] = df2['twitterReplyCount']
+            df3['twitter_likes'] = df2['like_count']
+            df3['twitter_reweets'] = df2['retweet_count']
+            df3['twitter_following'] = df2['following_count']
+            df3['twitter_followers'] = df2['follower_count']
+            df3['twitter_post_count'] = df2['twitterPostCount']
+            df3['twitter_verified'] = df2['twitterVerified']
+            df3['twitter_client'] = df2['tweet_client_name']
+            df3['twitter_role'] = df2['twitterRole']
+
+            df3['hashtags'] = df2['hashtags']
+            df3['user_mentions'] = df2['user_mentions']
+            df3['insights_hashtag'] = df2['insightsHashtag']
+            df3['insights_mentioned'] = df2['insightsMentioned']
+            df3['urls'] = df2['urls']
+            df3['matchPositions'] = df2['matchPositions']
+            
+            df3['thread_id'] = df2['threadId']
+            df3['thread_author'] = df2['threadAuthor']
+            df3['thread_created'] = df2['threadCreated']
+            df3['thread_entry_type'] = df2['threadEntryType']
+            df3['thread_url'] = df2['threadURL']
+
+            df3.to_csv(dest,escapechar="\\", index=False)
             print('Datasets are merged and saved to ', dest)
     else:
         print('Please input source and destination file path like this,')
