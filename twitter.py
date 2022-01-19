@@ -3,7 +3,7 @@ from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 from hashlib import md5, sha1, sha224, sha256, sha384, sha512, blake2b, blake2s
 from twarc import Twarc
-import emoji
+import html
 import re, sys, configparser
 from datetime import datetime
 import pandas as pd
@@ -81,13 +81,13 @@ class Twitter:
                 user_screen_name = item['user']['screen_name']
                 tweet_url = "https://twitter.com/" + user_screen_name + "/status/" + str(item['id'])
             if 'retweeted_status' in item and 'full_text' in item['retweeted_status']:
-                tweet_text = emoji.demojize(item['retweeted_status']['full_text'].replace('\r\n', ' ').replace('\r', ' ').replace('\n', ' ').replace('\u2066', '').replace('\u2069', '').replace('|', '-'))
+                tweet_text = html.unescape(item['retweeted_status']['full_text'].replace('\r\n', ' ').replace('\r', ' ').replace('\n', ' ').replace('\u2066', '').replace('\u2069', '').replace('|', '-'))
             elif 'full_text' in item:
-                tweet_text = emoji.demojize(item['full_text'].replace('\r\n', ' ').replace('\r', ' ').replace('\n', ' ').replace('\u2066', '').replace('\u2069', '').replace('|', '-'))
+                tweet_text = html.unescape(item['full_text'].replace('\r\n', ' ').replace('\r', ' ').replace('\n', ' ').replace('\u2066', '').replace('\u2069', '').replace('|', '-'))
             elif 'text' in item:
-                tweet_text = emoji.demojize(item['text'].replace('\r\n', ' ').replace('\r', ' ').replace('\n', ' ').replace('\u2066', '').replace('\u2069', '').replace('|', '-'))
+                tweet_text = html.unescape(item['text'].replace('\r\n', ' ').replace('\r', ' ').replace('\n', ' ').replace('\u2066', '').replace('\u2069', '').replace('|', '-'))
             
-            user_desc = emoji.demojize(item['user']['description'].replace('\r\n', ' ').replace('\r', ' ').replace('\n', ' ').replace('\u2066', '').replace('\u2069', '').replace('|', '-'))
+            user_desc = html.unescape(item['user']['description'].replace('\r\n', ' ').replace('\r', ' ').replace('\n', ' ').replace('\u2066', '').replace('\u2069', '').replace('|', '-'))
 
             location = item['user']['location'].replace('\r\n', ' ').replace('\r', ' ').replace('\n', ' ').replace('\u2066', '').replace('\u2069', '').replace('|', '-')
 

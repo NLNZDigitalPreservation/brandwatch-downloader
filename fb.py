@@ -1,5 +1,5 @@
 from hashlib import md5, sha1, sha224, sha256, sha384, sha512, blake2b, blake2s
-import emoji
+import html
 import re, sys, configparser
 from datetime import datetime
 import pandas as pd
@@ -14,7 +14,8 @@ if __name__ == '__main__':
     df = pd.read_csv(src)
     
     df1 = df[['date', 'title']]
-    df1['text'] = df['fullText']
+    df1['title'] = df1['title'].astype(str).apply(lambda x: html.unescape(x))
+    df1['text'] = df['fullText'].astype(str).apply(lambda x: html.unescape(x))
     df1['url'] = df['url']
     df1['text_language'] = df['language']
     df1['sentiment'] = df['sentiment']
@@ -37,7 +38,7 @@ if __name__ == '__main__':
     df1['facebook_updated'] = df['updated']
     df1['matchPositions'] = df['matchPositions']
     df1['thread_id'] = df['threadId']
-    df1['thread_author'] = df['threadAuthor']
+    df1['thread_author'] = df['threadAuthor'].astype(str).apply(lambda x: html.unescape(x))
     df1['thread_created'] = df['threadCreated']
     df1['thread_entry_type'] = df['threadEntryType']
     df1['thread_url'] = df['threadURL']
