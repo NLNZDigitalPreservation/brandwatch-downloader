@@ -156,7 +156,7 @@ if __name__ == '__main__':
             else:
                 isHash = True
             print('Reading data from ',src)
-            df = pd.read_csv(src)
+            df = pd.read_csv(src,encoding='utf-8',low_memory=False)
             df['tweetid']=df['url'].str.split('/').str[-1]
             ids = df['tweetid'].astype(np.int64).tolist()
             df1 = df[['tweetid','threadId','threadAuthor','threadCreated','threadEntryType','threadURL','title','fullname','accountType','added','categories','categoryDetails','checked','city','cityCode','continent','continentCode','country','countryCode','region','regionCode','locationName','longitude','latitude','twitterReplyCount','twitterPostCount','twitterVerified','twitterRole','subtype','engagementType','gender','impressions','insightsHashtag','insightsMentioned','interest','language','matchPositions','mediaFilter','mediaUrls','professions','queryId','queryName','reachEstimate','resourceType','sentiment','tags','updated','classifications','impact','imageMd5s','imageInfo']]
@@ -231,7 +231,7 @@ if __name__ == '__main__':
             df3['thread_entry_type'] = df2['threadEntryType']
             df3['thread_url'] = df2['threadURL']
 
-            df3.to_csv(dest,escapechar="\\", index=False)
+            df3.to_csv(dest, escapechar="\"", encoding='utf-8', index=False)
             print('Datasets are merged and saved to ', dest)
     else:
         print('Please input source and destination file path like this,')

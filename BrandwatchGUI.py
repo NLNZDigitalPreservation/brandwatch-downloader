@@ -819,9 +819,9 @@ class Window(QWidget):
             if format == 'JSON':
                 df.to_json(self.downloader.savePath, orient = 'records')
             elif format == 'CSV (delimiter with comma)':
-                df.to_csv(self.downloader.savePath, sep = ',', escapechar="\\", doublequote=False, index = False)
+                df.to_csv(self.downloader.savePath, sep = ',', escapechar="\"", encoding='utf-8', doublequote=False, index = False)
             elif format == 'CSV (delimiter with pipe)':
-                df.to_csv(self.downloader.savePath, sep = '|', escapechar="\\", doublequote=False, index = False)
+                df.to_csv(self.downloader.savePath, sep = '|', escapechar="\"", encoding='utf-8', doublequote=False, index = False)
             elif format == 'EXCEL':
                 df.to_excel(self.downloader.savePath, index = False)
         except Exception as e:

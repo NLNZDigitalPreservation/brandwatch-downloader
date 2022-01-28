@@ -11,7 +11,7 @@ if __name__ == '__main__':
     src = str(sys.argv[1])
     dest = str(sys.argv[2])
     print('Reading data from ',src)
-    df = pd.read_csv(src)
+    df = pd.read_csv(src,encoding='utf-8',low_memory=False)
     
     df1 = df[['date', 'title']]
     df1['title'] = df1['title'].astype(str).apply(lambda x: html.unescape(x))
@@ -43,5 +43,5 @@ if __name__ == '__main__':
     df1['thread_entry_type'] = df['threadEntryType']
     df1['thread_url'] = df['threadURL']
 
-    df1.to_csv(dest,escapechar="\\", index=False)
+    df1.to_csv(dest, escapechar="\"", encoding='utf-8', index=False)
     print('Datasets are merged and saved to ', dest)
