@@ -29,6 +29,7 @@ class Twitter:
             self.t = Twarc(self.consumer_key, self.consumer_secret, self.access_token, self.access_token_secret, tweet_mode='extended')
             self.user_id_dict = {}
             self.user_name_dict = {}
+            self.user_url_dict = {}
             self.user_screen_name_dict = {}
             self.isHash = isHash
     
@@ -41,6 +42,10 @@ class Twitter:
             if value not in self.user_name_dict.keys():
                 self.user_name_dict[value] = self.getHash(value)
             value_hash = self.user_name_dict[value]
+        elif dict_type == 'url':
+            if value not in self.user_url_dict.keys():
+                self.user_url_dict[value] = self.getHash(value)
+            value_hash = self.user_url_dict[value]
         elif dict_type == 'screenname':
             if value not in self.user_screen_name_dict.keys():
                 self.user_screen_name_dict[value] = self.getHash(value)
@@ -73,11 +78,13 @@ class Twitter:
             if self.isHash:
                 user_id = self.getUserDetails(item['user']['id_str'], 'id')
                 user_name = self.getUserDetails(item['user']['name'], 'name')
+                user_url = self.getUserDetails(item['user']['url'], 'url')
                 user_screen_name = self.getUserDetails(item['user']['screen_name'], 'screenname')
                 tweet_url = self.getHash("https://twitter.com/" + user_screen_name + "/status/" + str(item['id']))
             else:
                 user_id = item['user']['id_str']
                 user_name = item['user']['name']
+                user_url = item['user']['url']
                 user_screen_name = item['user']['screen_name']
                 tweet_url = "https://twitter.com/" + user_screen_name + "/status/" + str(item['id'])
             if 'retweeted_status' in item and 'full_text' in item['retweeted_status']:
@@ -133,13 +140,33 @@ class Twitter:
             tweet_date = datetime.strptime(item['created_at'], '%a %b %d %H:%M:%S +0000 %Y')
             user_date = datetime.strptime(item['user']['created_at'], '%a %b %d %H:%M:%S +0000 %Y')
 
-            results.append({'tweetid':item['id'],'tweet_url':tweet_url,'userid':user_id,'user_display_name':user_name,'user_screen_name':user_screen_name,'user_reported_location':location,'user_profile_description':user_desc,'user_profile_url':item['user']['url'],'follower_count':item['user']['followers_count'],'following_count':item['user']['friends_count'],'account_creation_date':user_date.strftime("%a %b %d %H:%M:%S +0000 %Y"),'account_language':item['user']['lang'],'tweet_language':item['lang'],'tweet_text':tweet_text,'tweet_time':tweet_date.strftime("%a %b %d %H:%M:%S +0000 %Y"),'tweet_client_name':source,'in_reply_to_userid':in_reply_to_user_id_str,'in_reply_to_tweetid':item['in_reply_to_status_id_str'],'retweet_userid':retweeted_user_id,'retweet_tweetid':retweeted_tweet_id,'like_count':item['favorite_count'],'retweet_count':item['retweet_count'],'hashtags':','.join(hashtags),'urls':','.join(urls),'user_mentions':','.join(user_mentions)})            
+            results.append({'tweetid':item['id'],'tweet_url':tweet_url,'userid':user_id,'user_display_name':user_name,'user_screen_name':user_screen_name,'user_reported_location':location,'user_profile_description':user_desc,'user_profile_url':user_url,'follower_count':item['user']['followers_count'],'following_count':item['user']['friends_count'],'account_creation_date':user_date.strftime("%a %b %d %H:%M:%S +0000 %Y"),'account_language':item['user']['lang'],'tweet_language':item['lang'],'tweet_text':tweet_text,'tweet_time':tweet_date.strftime("%a %b %d %H:%M:%S +0000 %Y"),'tweet_client_name':source,'in_reply_to_userid':in_reply_to_user_id_str,'in_reply_to_tweetid':item['in_reply_to_status_id_str'],'retweet_userid':retweeted_user_id,'retweet_tweetid':retweeted_tweet_id,'like_count':item['favorite_count'],'retweet_count':item['retweet_count'],'hashtags':','.join(hashtags),'urls':','.join(urls),'user_mentions':','.join(user_mentions)})            
         return results
     
     def getItemsDF(self, ids):
         results = self.getItemsByIds(ids)
         df = pd.json_normalize(results)
         return df
+
+def getHash(value, algo='sha1'):
+    value = str(value)
+    if algo == 'md5':
+        hex_dig = md5(value.encode('utf-8')).hexdigest()
+    elif algo == 'sha1':
+        hex_dig = sha1(value.encode('utf-8')).hexdigest()
+    elif algo == 'sha224':
+        hex_dig = sha224(value.encode('utf-8')).hexdigest()
+    elif algo == 'sha256':
+        hex_dig = sha256(value.encode('utf-8')).hexdigest()
+    elif algo == 'sha384':
+        hex_dig = sha384(value.encode('utf-8')).hexdigest()
+    elif algo == 'sha512':
+        hex_dig = sha512(value.encode('utf-8')).hexdigest()
+    elif algo == 'blake2b':
+        hex_dig = blake2b(value.encode('utf-8')).hexdigest()
+    elif algo == 'blake2s':
+        hex_dig = blake2s(value.encode('utf-8')).hexdigest()
+    return hex_dig
 
 if __name__ == '__main__':
     
@@ -170,7 +197,10 @@ if __name__ == '__main__':
             df2 = pd.merge(data, df1, on='tweetid')
             df3 = df2[['tweet_time']]
             df3.columns = ['date'] 
-            df3['title'] = df2['title']
+            if isHash:
+                df3['title'] = df2['title'].apply(getHash)
+            else:
+                df3['title'] = df2['title']
             df3['text'] = df2['tweet_text']
             df3['url'] = df2['tweet_url']
             df3['text_language'] = df2['tweet_language']
@@ -186,7 +216,10 @@ if __name__ == '__main__':
             df3['engagement_type'] = df2['engagementType']        
             
             df3['user_id'] = df2['userid']
-            df3['user_name'] = df2['fullname']
+            if isHash:
+                df3['user_name'] = df2['fullname'].apply(getHash)
+            else:
+                df3['user_name'] = df2['fullname']
             df3['user_profile_description'] = df2['user_profile_description']
             df3['user_profile_url'] = df2['user_profile_url']
             df3['user_gender'] = df2['gender']
