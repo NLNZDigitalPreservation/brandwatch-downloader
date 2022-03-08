@@ -252,7 +252,7 @@ class Brandwatch:
             self.getQueries(project)
         if self.__queries is not None:
             try:
-                mentions = self.__queries.get_mentions(name = name, startDate = start, endDate = end)
+                mentions = self.__queries.get_mentions(name = name, startDate = start, endDate = end, __logger = self.__logger, __delay = self.__delay)
                 if 'rate limit exceeded' in str(mentions) or 'Invalid access token' in str(mentions):
                     raise Exception(mentions)
                 else:
