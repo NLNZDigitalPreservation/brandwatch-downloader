@@ -66,6 +66,7 @@ class Brandwatch:
                 self.__user = None
             elif 'rate limit exceeded' in str(e):
                 logging.info('Rate limit exceeded, please wait '+str(self.__delay)+'s ...')
+                print('Rate limit exceeded, please wait '+str(self.__delay)+'s ...')
                 if self.__logger is not None:
                     self.__logger.emit('Rate limit exceeded, please wait '+str(self.__delay)+'s...')
                 self.__user = None
