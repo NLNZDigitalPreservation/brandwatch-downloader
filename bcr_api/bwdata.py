@@ -4,6 +4,7 @@ bwdata contains the BWData class.
 import datetime, time
 from . import filters
 import logging
+import random
 
 logger = logging.getLogger("bcr_api")
 
@@ -102,8 +103,10 @@ class BWData:
                     logger.info("Rate limit exceeded, please wait "+str(__delay)+"s ...")
                     if __logger is not None:
                         __logger.emit("Rate limit exceeded, please wait "+str(__delay)+"s ...")
+
                 page_idx -= 1
                 time.sleep(__delay)
+            time.sleep(random.randint(1, 5))
 
     def num_mentions(self, name=None, startDate=None, **kwargs):
         """
