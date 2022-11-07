@@ -254,10 +254,14 @@ class Brandwatch:
         if self.__queries is not None:
             try:
                 mentions = self.__queries.get_mentions(name = name, startDate = start, endDate = end, __logger = self.__logger, __delay = self.__delay)
-                if 'rate limit exceeded' in str(mentions) or 'Invalid access token' in str(mentions):
-                    raise Exception(mentions)
-                else:
-                    self.__mentions = mentions
+                if len(mentions) < 100:
+                    # Check for rate limit or access token message
+                    if 'rate limit exceeded' in str(mentions) or 'Invalid access token' in str(mentions):
+                        raise Exception(mentions)
+                logging.info(str(len(mentions)) + ' mentions')
+                if self.__logger is not None:
+                    self.__logger.emit(str(len(mentions)) + ' mentions')
+                self.__mentions = mentions
             except Exception as e:
                 if 'Invalid access token' in str(e):
                     logging.info('Token is invalid or expired')
